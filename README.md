@@ -181,9 +181,9 @@ data/search_history.json
 
 ## 👥 Contributors
 
-* Your Name Here
-* Team Member 1
-* Team Member 2
+* Arman Mahmoodzadeh
+* Royce Jamerson
+* James Ybarra
 
 ---
 
