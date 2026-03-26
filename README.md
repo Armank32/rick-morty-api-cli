@@ -184,6 +184,7 @@ data/search_history.json
 * Arman Mahmoodzadeh
 * Royce Jamerson
 * James Ybarra
+* Javier Gomez
 
 ---
 
