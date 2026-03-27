@@ -1,6 +1,6 @@
-const inquirer = require('inquirer');
-const api = require('./api');
-const history = require('./history');
+import inquirer from 'inquirer';
+import { searchCharacters, getCharacterById } from './api.js';
+import { addKeyword, readHistory } from './history.js';
 
 /**
  * Format a character object into a readable string.
@@ -29,11 +29,11 @@ function formatCharacterDetails(character) {
 async function selectCharacter(characters) {
   const choices = characters.map(char => ({
     name: `${char.name} (${char.species} | ${char.status})`,
-    value: char
+    value: char.id
   }));
   const answer = await inquirer.prompt([
     {
-      type: 'list',
+      type: 'rawlist',
       name: 'selectedCharacter',
       message: 'Select a character for details:',
       choices
@@ -48,19 +48,19 @@ async function selectCharacter(characters) {
  */
 async function searchAndSelect(keyword) {
   console.log(`\n🔍 Searching for "${keyword}"...`);
-  const characters = await api.searchByKeyword(keyword);
+  const characters = await searchCharacters(keyword);
   if (characters.length === 0) {
     console.log('❌ No characters found.\n');
     return;
   }
 
   // Save keyword to history (only if not already present)
-  history.addKeyword(keyword);
+  addKeyword(keyword);
 
   // Let user select a character
   const selectedChar = await selectCharacter(characters);
   console.log('\n📖 Fetching detailed information...');
-  const detailedChar = await api.getById(selectedChar.id);
+  const detailedChar = await getCharacterById(selectedChar);
   if (detailedChar) {
     console.log(formatCharacterDetails(detailedChar));
   } else {
@@ -73,7 +73,7 @@ async function searchAndSelect(keyword) {
  * Show history menu and handle selection.
  */
 async function historyKeywords() {
-  const keywords = history.readHistory();
+  const keywords = readHistory();
   if (keywords.length === 0) {
     console.log('📭 No search history found.\n');
     return;
@@ -85,7 +85,7 @@ async function historyKeywords() {
   ];
   const answer = await inquirer.prompt([
     {
-      type: 'list',
+      type: 'rawlist',
       name: 'selectedKeyword',
       message: 'Select a previous search keyword:',
       choices
@@ -96,4 +96,4 @@ async function historyKeywords() {
   }
 }
 
-module.exports = { searchAndSelect, historyKeywords };
+export { searchAndSelect, historyKeywords };
