@@ -9,7 +9,8 @@ const HISTORY_FILE = path.join(__dirname, 'search_history.json');
 function readHistory() {
   try {
     const data = fs.readFileSync(HISTORY_FILE, 'utf8');
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
     return [];
   }
@@ -27,4 +28,9 @@ function addKeyword(keyword) {
   }
 }
 
-export { readHistory, writeHistory, addKeyword };
+function clearHistory() {
+  writeHistory([]);
+  console.log('🗑️  Search history cleared.');
+}
+
+export { readHistory, writeHistory, addKeyword, clearHistory };
